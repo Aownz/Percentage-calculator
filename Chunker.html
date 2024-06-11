@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Percentage Calculator</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        h1 {
+            margin-bottom: 20px;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-top: 20px;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        input[type="text"] {
+            padding: 8px;
+            width: 200px;
+            margin-right: 10px;
+        }
+        button {
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+            margin-top: 10px;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        button.reset {
+            background-color: #f48fb1;
+            color: #37474f;
+            margin-right: 10px;
+        }
+        button.reset:hover {
+            background-color: #b2577a;
+        }
+        button.table-reset {
+            background-color: #ffcc80;
+            color: #37474f;
+            margin-left: auto;
+        }
+        button.table-reset:hover {
+            background-color: #ffab40;
+        }
+        button.enter {
+            background-color: #80e27e; /* Green pastel */
+            color: #37474f;
+        }
+        button.enter:hover {
+            background-color: #4caf50;
+        }
+    </style>
+</head>
+<body>
+    <h1>Percentage Calculator</h1>
+    <div>
+        <input type="text" id="name" placeholder="Name">
+        <input type="text" id="whole" placeholder="Whole">
+        <input type="text" id="chunk" placeholder="Chunk">
+        <input type="text" id="percentage" placeholder="Percentage">
+    </div>
+    <div>
+        <button class="enter" onclick="enterData()">
+            <i class="fas fa-plus"></i> Enter
+        </button>
+        <button class="reset" onclick="resetForm()">
+            <i class="fas fa-undo-alt"></i> Reset
+        </button>
+        <button class="table-reset" onclick="resetTable()">
+            <i class="fas fa-sync-alt"></i> Reset Table
+        </button>
+    </div>
+    <table id="dataTable">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Whole</th>
+                <th>Chunk</th>
+                <th>Percentage</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Data will be displayed here -->
+        </tbody>
+    </table>
+
+    <script>
+        const wholeInput = document.getElementById('whole');
+        const chunkInput = document.getElementById('chunk');
+        const percentageInput = document.getElementById('percentage');
+
+        [wholeInput, chunkInput, percentageInput].forEach(input => {
+            input.addEventListener('blur', calculateIfTwoInputsFilled);
+        });
+
+        function calculateIfTwoInputsFilled() {
+            const filledInputs = [wholeInput.value, chunkInput.value, percentageInput.value].filter(value => value.trim() !== '');
+            if (filledInputs.length >= 2) {
+                calculate();
+            }
+        }
+
+        function calculate() {
+            const whole = parseFloat(document.getElementById('whole').value.replace(/[^0-9.]/g, ''));
+            const chunk = parseFloat(document.getElementById('chunk').value.replace(/[^0-9.]/g, ''));
+            const percentage = parseFloat(document.getElementById('percentage').value.replace(/[^0-9.]/g, ''));
+
+            if (!isNaN(whole) && !isNaN(chunk) && isNaN(percentage)) {
+                document.getElementById('percentage').value = ((chunk / whole) * 100).toFixed(2) + '%';
+            } else if (!isNaN(whole) && isNaN(chunk) && !isNaN(percentage)) {
+                document.getElementById('chunk').value = '$' + (whole * percentage / 100).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
+            } else if (isNaN(whole) && !isNaN(chunk) && !isNaN(percentage)) {
+                document.getElementById('whole').value = '$' + (chunk / (percentage / 100)).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
+            }
+        }
+
+        function enterData() {
+            let name = document.getElementById('name').value;
+            if (!name.trim()) {
+                // Generate a random funny name related to making money
+                const funnyNames = ['Cash Cow', 'Dollar Bill', 'Penny Pincher', 'Gold Digger', 'Coin Collector', 'Profit Prophet'];
+                name = funnyNames[Math.floor(Math.random() * funnyNames.length)];
+            }
+            const whole = parseFloat(document.getElementById('whole').value.replace(/[^0-9.]/g, ''));
+            const chunk = parseFloat(document.getElementById('chunk').value.replace(/[^0-9.]/g, ''));
+            const percentage = parseFloat(document.getElementById('percentage').value.replace(/[^0-9.]/g, ''));
+
+            const table = document.getElementById('dataTable').getElementsByTagName('tbody')[0];
+            const newRow = table.insertRow(table.rows.length);
+            const cell1 = newRow.insertCell(0);
+            const cell2 = newRow.insertCell(1);
+            const cell3 = newRow.insertCell(2);
+            const cell4 = newRow.insertCell(3);
+
+            cell1.innerHTML = name;
+            cell2.innerHTML = isNaN(whole) ? '' : '$' + whole.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
+            cell3.innerHTML = isNaN(chunk) ? '' : '$' + chunk.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
+            cell4.innerHTML = isNaN(percentage) ? '' : percentage.toFixed(2) + '%';
+        }
+
+        function resetForm() {
+            document.getElementById('name').value = '';
+            document.getElementById('whole').value = '';
+            document.getElementById('chunk').value = '';
+            document.getElementById('percentage').value = '';
+        }
+
+        function resetTable() {
+            document.getElementById('dataTable').getElementsByTagName('tbody')[0].innerHTML = '';
+        }
+    </script>
+</body>
+</html>
