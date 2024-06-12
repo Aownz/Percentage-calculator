@@ -1,1 +1,2 @@
-# Percentage-calculator
+# Chunker
+Simpl percentage calculator
